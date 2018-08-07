@@ -28,9 +28,8 @@ register_deactivation_hook(__FILE__,array($activate, 'BV_uninstall'));
 add_action('wp_footer', array($get_data, 'get_query'),10);
 add_action('wp_head',  array($get_data, 'get_header_script_data'));
 add_action('wp_footer', array($get_data, 'get_footer_script_data'),100);
-
 function list_query_add_menu() {
-	add_menu_page( 'List All Query', 'List Query', 'manage_options', 'query-dashboard', 'list_query_file_path', plugins_url('images/logo.png', __FILE__),'2');
+	add_menu_page( 'List All Query', 'List Query', 'manage_options', 'query-dashboard', 'list_query_file_path', plugins_url('images/logo.png', __FILE__),'99');
 }
 
 function list_query_file_path() {
