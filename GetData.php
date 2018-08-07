@@ -106,7 +106,7 @@
 			$query .= implode(', ', $query_array);
 			$wpdb->query($query);
 		}
-
+		
 		public function get_component($source, $type)
 		{
 			$component = $source;
@@ -134,6 +134,7 @@
 
 			return $str;
 		}
+
 		public function get_batch_query($performance_id, $type, $position, $curr_script)
 		{
 			global $wpdb;
