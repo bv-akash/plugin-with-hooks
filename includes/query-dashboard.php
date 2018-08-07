@@ -73,13 +73,13 @@ if(!isset($_GET['gid']))
 					    $result = $wpdb->get_results($query);
 ?>  
     <table cellpadding=5 cellspacing=0 style="width:1100px;">
-      <tr><th> Performance ID </th><th> Type </th><th> Position </th><th> Handle </th><th> Source </th><th> Version </th><th> Dependencies </th><th> Component </th></tr>
+      <tr><th> S.No </th><th> Performance ID </th><th> Type </th><th> Position </th><th> Handle </th><th> Source </th><th> Version </th><th> Dependencies </th><th> Component </th></tr>
 <?php
-					    foreach($result as $data)
+					    foreach($result as $key => $data)
 								    {
 											  ?>
     
-													<tr><td><?php echo $data->gid; ?></td><td><?php echo $data->type; ?></td><td><?php echo $data->position; ?></td><td><?php echo $data->handle; ?></td><td><?php echo $data->source; ?></td><td><?php echo $data->version; ?></td><td><?php echo $data->dependencies; ?></td><td> <?php echo $data->component; ?> </td></tr>
+													<tr><td><?php echo $key+1; ?></td><td><?php echo $data->gid; ?></td><td><?php echo $data->type; ?></td><td><?php echo $data->position; ?></td><td><?php echo $data->handle; ?></td><td><?php echo $data->source; ?></td><td><?php echo $data->version; ?></td><td><?php echo $data->dependencies; ?></td><td> <?php echo $data->component; ?> </td></tr>
   
   <?php
     }
@@ -94,13 +94,13 @@ if(!isset($_GET['gid']))
 								              $result = $wpdb->get_results($query);
 ?>
     <table cellpadding=5 cellspacing=0 style="width:1100px;">
-      <tr><th> Performance ID </th><th> Type </th><th> Position </th><th> Handle </th><th> Source </th><th> Version </th><th> Dependencies </th><th> Component </th></tr>
+      <tr><th> S.No </th><th> Performance ID </th><th> Type </th><th> Position </th><th> Handle </th><th> Source </th><th> Version </th><th> Dependencies </th><th> Component </th></tr>
 <?php
-								              foreach($result as $data)
+								              foreach($result as $key => $data)
 																                    {
 																											                        ?>
 
-																																								<tr><td><?php echo $data->gid; ?></td><td><?php echo $data->type; ?></td><td><?php echo $data->position; ?></td><td><?php echo $data->handle; ?></td><td><?php echo $data->source; ?></td><td><?php echo $data->version; ?></td><td><?php echo $data->dependencies; ?></td><td> <?php echo $data->component; ?> </td></tr>
+						<tr><td><?php echo $key+1; ?></td><td><?php echo $data->gid; ?></td><td><?php echo $data->type; ?></td><td><?php echo $data->position; ?></td><td><?php echo $data->handle; ?></td><td><?php echo $data->source; ?></td><td><?php echo $data->version; ?></td><td><?php echo $data->dependencies; ?></td><td> <?php echo $data->component; ?> </td></tr>
 
   <?php
     }

@@ -149,10 +149,6 @@
 			$dependencies = $wpdb->_real_escape($dependencies);
 			$batch_query = "('".$performance_id."','".$type."','".$position."','".$handle."','".$source."','".$version."','".$dependencies."','".$component."')";
 			return $batch_query;
-
 		}
-
-
-
 	}
 ?>
