@@ -1,0 +1,37 @@
+table{
+  border:1px solid #CCC;
+  width:1000px;
+  margin:0 auto;
+}
+td{
+  border:1px solid #CCC;
+  text-align:center;
+}
+td a{
+	color:#0000EE;
+}
+td a:hover{
+	color:#0000EE;
+	text-decoration:underline;
+}
+th{
+  border:1px solid #CCC;
+}
+h1{
+  text-align:center;
+}
+a{
+	text-decoration:none;
+	color:#FFF;
+}
+a:hover{
+	color:#FFF;
+}
+.top_btn{
+	width:200px;
+	text-align:center;
+	margin:5px auto;
+	padding:5px;
+	border:1px solid #CCC;
+	background:#2196f3;
+}

@@ -5,9 +5,7 @@ if ( ! defined( 'SAVEQUERIES' ) ) {
 
 class My_DB extends wpdb {
 	function __construct( $dbuser, $dbpassword, $dbname, $dbhost ) {
-
 		parent::__construct( $dbuser, $dbpassword, $dbname, $dbhost );
-
 	}
 
 	function query( $query ) {
@@ -35,7 +33,6 @@ class My_DB extends wpdb {
 
 		return $result;
 	}
-
 }
 
 $wpdb = new My_DB( DB_USER, DB_PASSWORD, DB_NAME, DB_HOST );
