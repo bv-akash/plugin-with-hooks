@@ -2,10 +2,11 @@
 if (!defined('ABSPATH')) exit;
 require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 
+if (!class_exists('Database')) :
 class Database{
-		const DB_PERFORMANCE = 'performance';
-		const DB_QUERYDATA = 'querydata';
-		const DB_SCRIPTDATA = 'scriptdata';
+	const DB_PERFORMANCE = 'performance';
+	const DB_QUERYDATA = 'querydata';
+	const DB_SCRIPTDATA = 'scriptdata';
 	
 	public static function create_table_performance(){
 		global $wpdb;
@@ -21,7 +22,7 @@ class Database{
 			PRIMARY KEY  (id)
 		) $charset_collate;";
 
-dbDelta( $sql );
+		dbDelta( $sql );
 	}
 
 	public static function create_table_querydata(){
@@ -39,7 +40,7 @@ dbDelta( $sql );
 			PRIMARY KEY  (id)
 		) $charset_collate;";
 
-dbDelta( $sql );
+		dbDelta( $sql );
 	}
 
 	public static function create_table_scriptdata(){
@@ -59,12 +60,13 @@ dbDelta( $sql );
 			PRIMARY KEY  (id)
 		) $charset_collate;";
 
-dbDelta( $sql );
+		dbDelta( $sql );
 	}
 
 	public static function drop_table_all(){
 		global $wpdb;
-		$table = array($wpdb->prefix."performance", $wpdb->prefix."querydata", $wpdb->prefix."scriptdata");
+		$table = array($wpdb->prefix."performance", $wpdb->prefix."querydata",
+			$wpdb->prefix."scriptdata");
 		foreach($table as $name)
 		{
 			$sql = "DROP TABLE IF EXISTS ".$name.";";
@@ -76,21 +78,27 @@ dbDelta( $sql );
 	{
 		global $wpdb;
 		if($type == 'script'){
-			$query = "INSERT INTO ".$wpdb->prefix.Database::DB_SCRIPTDATA." (gid, type, position, handle, source, version, dependencies, component) VALUES ";
+			$query = "INSERT INTO ".$wpdb->prefix.Database::DB_SCRIPTDATA." (gid, type, position, handle,
+				source, version, dependencies, component) VALUES ";
 			$query .= implode(', ', $batch_array);
 			$wpdb->query($query);
 		}else if($type == 'query'){
-			$query = "INSERT INTO ".$wpdb->prefix.Database::DB_QUERYDATA." (gid, query, query_time, stack, results, component) VALUES ";
+			$query = "INSERT INTO ".$wpdb->prefix.Database::DB_QUERYDATA." (gid, query, query_time,
+				stack, results, component) VALUES ";
 			$query .= implode(', ', $batch_array);
 			$wpdb->query($query);
 		}
 	}
 
-	public static function insert_performance_data($performance_id, $num_queries, $query_time, $total_time)
+	public static function insert_performance_data($performance_id, $num_queries, $query_time,
+		$total_time)
 	{
 		global $wpdb;
-		$sql_performance = "INSERT INTO ".$wpdb->prefix."performance (gid, num_queries, all_query_time, pageload_time) VALUES ('".$performance_id."', '".$num_queries."', '".$query_time."', '".$total_time."')";
+		$sql_performance = "INSERT INTO ".$wpdb->prefix."performance (gid, num_queries, all_query_time,
+			pageload_time) VALUES ('".$performance_id."', '".$num_queries."', '".$query_time."',
+			'".$total_time."')";
 		$wpdb->query($sql_performance);
 	}
 }
+endif;
 ?>

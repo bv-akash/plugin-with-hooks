@@ -20,7 +20,8 @@ if (!class_exists('SiteInfo')) :
 				$query_time += $time_taken;
 				$stack = $wpdb->_real_escape($data_value[2]);
 				$component = $this->get_query_component($data_value[3]);
-				$batch_query = "('".$performance_id."','".$query_data."','".$time_taken."','".$stack."','".$results."','".$component."')";
+				$batch_query = "('".$performance_id."','".$query_data."','".$time_taken."','".$stack."',
+					'".$results."','".$component."')";
 				array_push($query_array ,$batch_query);
 			}
 			Database::insert_performance_data($performance_id, $num_queries, $query_time, $total_time);
@@ -57,7 +58,8 @@ if (!class_exists('SiteInfo')) :
 			$version = $wpdb->_real_escape($curr_script->ver);
 			$dependencies = implode(', ', $curr_script->deps);
 			$dependencies = $wpdb->_real_escape($dependencies);
-			$batch_query = "('".$performance_id."','".$type."','".$position."','".$handle."','".$source."','".$version."','".$dependencies."','".$component."')";
+			$batch_query = "('".$performance_id."','".$type."','".$position."','".$handle."',
+				'".$source."','".$version."','".$dependencies."','".$component."')";
 			return $batch_query;
 		}
 		

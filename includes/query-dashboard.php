@@ -47,7 +47,6 @@ if(!isset($_GET['gid']))
 			$query = "SELECT * FROM wp_querydata WHERE gid='".$gid."'";
 			$result = $wpdb->get_results($query);
 ?>
-			<table cellpadding=5 cellspacing=0 style="width:900px;">
 				<tr>
 					<th> S.No </th><th> Performance ID </th><th> QUERY </th><th> Time </th><th> Stack </th>
 					<th> Results </th><th> Component </th>
@@ -64,7 +63,6 @@ if(!isset($_GET['gid']))
 		<?php
 			}
 		?>
-		</table>
 	<?php
 		}else{	    
 			if($type == 'js')
