@@ -13,7 +13,7 @@ if(!isset($_GET['gid']))
 	$query = "SELECT * FROM wp_performance";
 	$result = $wpdb->get_results($query);
 ?>
-<a href="../?req=blogvault"><div class="top_btn"> + Generate New Report </div></a>
+<a href="../?req=blogvault" target="_blank"><div class="top_btn"> + Generate New Report </div></a>
 	<tr>
 		<th> ID </th><th> Performance ID </th><th> Total Queries </th><th> Query Time </th>
 		<th> Page Load Time </th><th> Generated At </th><th> Query Report </th><th> JS Report </th>
@@ -25,7 +25,7 @@ if(!isset($_GET['gid']))
 	?>
 			<tr>
 				<td><?php echo $data->id; ?></td><td><?php echo $data->gid; ?></td>
-				<td><?php echo $data->num_queries; ?></td><td><?php echo $data->query_time; ?></td>
+				<td><?php echo $data->num_queries; ?></td><td><?php echo $data->all_query_time; ?></td>
 				<td><?php echo $data->pageload_time; ?></td><td><?php echo $data->created_at; ?></td>
 				<td> <a href='admin.php?page=query-dashboard&type=query&gid=<?php echo $data->gid; ?>'>
 						View Report </a></td>
@@ -57,7 +57,7 @@ if(!isset($_GET['gid']))
 		?>
 				<tr>
 					<td><?php echo $key+1; ?></td><td><?php echo $data->gid; ?></td>
-					<td><?php echo $data->query; ?></td><td><?php echo $data->time; ?></td>
+					<td><?php echo $data->query; ?></td><td><?php echo $data->query_time; ?></td>
 					<td><?php echo $data->stack; ?></td><td><?php echo $data->results; ?></td>
 					<td><?php echo $data->component; ?></td>
 				</tr>

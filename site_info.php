@@ -1,17 +1,16 @@
 <?php
+require_once dirname( __FILE__ ) . '/database.php';
+
 if (!class_exists('SiteInfo')) :
 	class SiteInfo{
-			
+		
 		public function get_query(){
 			global $wpdb, $performance_id;
+			
 			$data = $wpdb->queries;
-
 			$num_queries = $wpdb->num_queries;
 			$total_time = round(timer_stop(false, 22 ),4);
 			$query_time = 0;
-			
-
-			$query = "INSERT INTO ".$wpdb->prefix."querydata (gid, query, time, stack, results, component) VALUES ";
 			$query_array = array();
 			foreach($wpdb->queries as $data_value)
 			{
@@ -20,37 +19,12 @@ if (!class_exists('SiteInfo')) :
 				$time_taken = round($data_value[1],4);
 				$query_time += $time_taken;
 				$stack = $wpdb->_real_escape($data_value[2]);
-
-
-				$found = 0;
-				$plugin_name = "";
-				foreach($data_value[3] as $trace_value)
-				{
-					if(strpos($trace_value['file'], "/plugins/"))
-					{
-						$found = 1;
-						$plugin_name = $trace_value['file'];
-						$plugin_name = str_replace(WP_PLUGIN_URL,'',$plugin_name);
-						$plugin_name = ucfirst(substr($plugin_name, 0, strpos( $plugin_name, '/')));
-						$plugin_name = "Plugin : ".$plugin_name;
-						break;
-					}
-				}
-				if($found == 0)
-					$component = "Core";
-				else
-					$component = $plugin_name;
-
+				$component = $this->get_query_component($data_value[3]);
 				$batch_query = "('".$performance_id."','".$query_data."','".$time_taken."','".$stack."','".$results."','".$component."')";
 				array_push($query_array ,$batch_query);
 			}
-
-			
-			$sql_performance = "INSERT INTO ". $wpdb->prefix ."performance (gid, num_queries, query_time, pageload_time) VALUES ('".$performance_id."', '".$num_queries."', '".$query_time."', '".$total_time."')";
-			$wpdb->query($sql_performance);
-
-			$query .= implode(', ', $query_array);
-			$wpdb->query($query);
+			Database::insert_performance_data($performance_id, $num_queries, $query_time, $total_time);
+			Database::insert_data($query_array, 'query');
 		}
 
 		public function get_header_script_data(){
@@ -66,14 +40,12 @@ if (!class_exists('SiteInfo')) :
 			$footer_data_scripts = array_diff($wp_scripts->done, $header_data_scripts);
 			$data_styles = $wp_styles;
 			$data_scripts = $wp_scripts;
-			$query = "INSERT INTO ".$wpdb->prefix."scriptdata (gid, type, position, handle, source, version, dependencies, component) VALUES ";
 			$query_array = array();
 			$this->get_asset_data($header_data_styles, $data_styles, 'CSS', 'HEADER', $query_array);
 			$this->get_asset_data($footer_data_styles, $data_styles, 'CSS', 'FOOTER', $query_array);
 			$this->get_asset_data($header_data_scripts, $data_scripts, 'JS', 'HEADER', $query_array);
 			$this->get_asset_data($footer_data_scripts, $data_scripts, 'JS', 'FOOTER', $query_array);
-			$query .= implode(', ', $query_array);
-			$wpdb->query($query);
+			Database::insert_data($query_array,'script');
 		}
 		public function get_batch_query($performance_id, $type, $position, $curr_script)
 		{
@@ -92,27 +64,27 @@ if (!class_exists('SiteInfo')) :
 		public function get_component($component, $script_type)
 		{
 			if($component == '')
-				$str = "Un-Defined";
+				$component_name = "Un-Defined";
 			else if(strpos($component, "/wp-includes/".$script_type."/") !== false)
-				$str = "Core";
+				$component_name = "Core";
 			else if(strpos($component, "/wp-content/themes/") !== false)
 			{
-				$str = $component;
-				$str = str_replace(WP_CONTENT_URL.'/themes/','',$str);
-				$str = ucfirst(substr($str, 0, strpos( $str, '/')));
-				$str = "Theme : ".$str;
+				$component_name = $component;
+				$component_name = str_replace(WP_CONTENT_URL.'/themes/','',$component_name);
+				$component_name = ucfirst(substr($component_name, 0, strpos( $component_name, '/')));
+				$component_name = "Theme : ".$component_name;
 			}
 			else if(strpos($component, "/wp-content/plugins/") !== false)
 			{
-				$str = $component;
-				$str = str_replace(WP_PLUGIN_URL,'',$str);
-				$str = ucfirst(substr($str, 0, strpos( $str, '/')));
-				$str = "Plugin : ".$str;
+				$component_name = $component;
+				$component_name = str_replace(WP_PLUGIN_URL."/",'',$component_name);
+				$component_name = ucfirst(substr($component_name, 0, strpos( $component_name, '/')));
+				$component_name = "Plugin : ".$component_name;
 			}
 			else
-				$str = "External";
+				$component_name = "External";
 
-			return $str;
+			return $component_name;
 		}
 
 			public function get_asset_data($asset_array, $asset_data, $type, $position, &$query_array)
@@ -125,6 +97,28 @@ if (!class_exists('SiteInfo')) :
 					array_push($query_array, $batch_query);
 				}
 			}
+
+		public function get_query_component($full_trace){
+			$found = 0;
+			foreach($full_trace as $trace_value)
+			{
+				if(strpos($trace_value['file'], "/plugins/"))
+				{ 
+					$found = 1;
+					$plugin_name = $trace_value['file'];
+					$plugin_name = str_replace(WP_PLUGIN_DIR.'/','',$plugin_name);
+					$plugin_name = ucfirst(substr($plugin_name, 0, strpos( $plugin_name, '/')));
+					$plugin_name = "Plugin : ".$plugin_name;
+					break;
+				}
+			}
+			if($found == 0)
+				$component = "Core";
+			else
+				$component = $plugin_name;
+
+			return $component;
+		}
 
 	}
 endif;
