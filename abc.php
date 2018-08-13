@@ -13,11 +13,8 @@
  */
 
 define('SAVEQUERIES', true);
-define('WP_USE_THEMES', true);
 define('TRACKMORE', true);
-global $bv_time_start;
-$bv_time_start = microtime(true);
-
+define('WP_USE_THEMES', true);
 
 /** Loads the WordPress Environment and Template */
 require( dirname( __FILE__ ) . '/../../../wp-blog-header.php' );
