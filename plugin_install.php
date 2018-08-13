@@ -2,7 +2,7 @@
 require_once dirname( __FILE__ ) . '/database.php';
 
 if (!class_exists('Activate')) :
-class Activate{
+class PluginInstall{
 	function activate_plugin() {
 		Database::create_table_performance();
 		Database::create_table_querydata();
