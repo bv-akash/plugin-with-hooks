@@ -28,7 +28,7 @@ function add_admin_menu() {
 
 function dashboard_file_path() {
   wp_enqueue_style( 'bv-query', plugins_url('css/custom.css', __FILE__));
-  require_once(dirname(__FILE__) . '/includes/query-dashboard.php');
+  require_once(dirname(__FILE__) . '/dashboard/query-dashboard.php');
 }
 
 
