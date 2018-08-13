@@ -15,8 +15,6 @@ class Database{
 		$sql = "CREATE TABLE $tb_name_performance (
 			id INT(11) NOT NULL AUTO_INCREMENT,
 			gid VARCHAR(16) NOT NULL,
-			num_queries INT(11),
-			all_query_time FLOAT,
 			pageload_time FLOAT,
 			created_at TIMESTAMP  DEFAULT CURRENT_TIMESTAMP,
 			PRIMARY KEY  (id)
@@ -74,8 +72,7 @@ class Database{
 		}
 	}
 
-	public static function insert_data($batch_array, $type)
-	{
+	public static function insert_data($batch_array, $type) {
 		global $wpdb;
 		if($type == 'script'){
 			$query = "INSERT INTO ".$wpdb->prefix.Database::DB_SCRIPTDATA." (gid, type, position, handle,
@@ -90,13 +87,10 @@ class Database{
 		}
 	}
 
-	public static function insert_performance_data($performance_id, $num_queries, $query_time,
-		$total_time)
-	{
+	public static function insert_performance_data($performance_id, $total_time) {
 		global $wpdb;
-		$sql_performance = "INSERT INTO ".$wpdb->prefix."performance (gid, num_queries, all_query_time,
-			pageload_time) VALUES ('".$performance_id."', '".$num_queries."', '".$query_time."',
-			'".$total_time."')";
+		$sql_performance = "INSERT INTO ".$wpdb->prefix."performance (gid, pageload_time) VALUES 
+				('".$performance_id."', '".$total_time."')";
 		$wpdb->query($sql_performance);
 	}
 }

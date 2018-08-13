@@ -4,37 +4,47 @@ require_once dirname( __FILE__ ) . '/database.php';
 if (!class_exists('SiteInfo')) :
 	class SiteInfo{
 		
-		public function get_query(){
+		public function get_queries($type) {
 			global $wpdb, $performance_id;
-			
 			$data = $wpdb->queries;
-			$num_queries = $wpdb->num_queries;
-			$total_time = round(timer_stop(false, 22 ),4);
-			$query_time = 0;
 			$query_array = array();
 			foreach($wpdb->queries as $data_value)
 			{
 				$query_data = $wpdb->_real_escape($data_value[0]);
-				$results = $data_value[5];
+				if(isset($data_value[5])) {
+					$results = $data_value[5];
+				}else {
+					$results = -1;
+				}
 				$time_taken = round($data_value[1],4);
-				$query_time += $time_taken;
+				//$query_time += $time_taken;
 				$stack = $wpdb->_real_escape($data_value[2]);
-				$component = $this->get_query_component($data_value[3]);
+				if(isset($data_value[3])) {
+					$component = $this->get_query_component($data_value[3]);
+				}else {
+					$component = "Not Defined";
+				}
 				$batch_query = "('".$performance_id."','".$query_data."','".$time_taken."','".$stack."',
 					'".$results."','".$component."')";
+
 				array_push($query_array ,$batch_query);
 			}
-			Database::insert_performance_data($performance_id, $num_queries, $query_time, $total_time);
+
 			Database::insert_data($query_array, 'query');
+			if($type != 'default') {
+				$total_time = round(timer_stop(false, 22 ),4);
+				Database::insert_performance_data($performance_id, $total_time);
+			}
 		}
 
-		public function get_header_script_data(){
+		public function get_header_script_data() {
 			global $wp_styles, $wp_scripts, $header_data_scripts, $header_data_styles;
 
 			$header_data_scripts = $wp_scripts->done;
 			$header_data_styles = $wp_styles->done;
 		}
-		public function get_footer_script_data(){
+
+		public function get_footer_script_data() {
 			global $wp_styles, $wp_scripts, $header_data_styles, $header_data_scripts, $wpdb;
 			
 			$footer_data_styles = array_diff($wp_styles->done, $header_data_styles);
@@ -48,8 +58,8 @@ if (!class_exists('SiteInfo')) :
 			$this->get_asset_data($footer_data_scripts, $data_scripts, 'JS', 'FOOTER', $query_array);
 			Database::insert_data($query_array,'script');
 		}
-		public function get_batch_query($performance_id, $type, $position, $curr_script)
-		{
+
+		public function get_batch_query($performance_id, $type, $position, $curr_script) {
 			global $wpdb;
 
 			$handle = $wpdb->_real_escape($curr_script->handle);
@@ -63,8 +73,7 @@ if (!class_exists('SiteInfo')) :
 			return $batch_query;
 		}
 		
-		public function get_component($component, $script_type)
-		{
+		public function get_component($component, $script_type) {
 			if($component == '')
 				$component_name = "Un-Defined";
 			else if(strpos($component, "/wp-includes/".$script_type."/") !== false)
@@ -89,23 +98,20 @@ if (!class_exists('SiteInfo')) :
 			return $component_name;
 		}
 
-			public function get_asset_data($asset_array, $asset_data, $type, $position, &$query_array)
-			{
-				global $performance_id;
-				foreach($asset_array as $asset_value)
-				{
-					$curr_asset = $asset_data->registered[$asset_value];
-					$batch_query = $this->get_batch_query($performance_id, $type, $position, $curr_asset);
-					array_push($query_array, $batch_query);
-				}
-			}
+		public function get_asset_data($asset_array, $asset_data, $type, $position, &$query_array) {
+			global $performance_id;
 
-		public function get_query_component($full_trace){
+			foreach($asset_array as $asset_value){
+				$curr_asset = $asset_data->registered[$asset_value];
+				$batch_query = $this->get_batch_query($performance_id, $type, $position, $curr_asset);
+				array_push($query_array, $batch_query);
+			}
+		}
+
+		public function get_query_component($full_trace) {
 			$found = 0;
-			foreach($full_trace as $trace_value)
-			{
-				if(strpos($trace_value['file'], "/plugins/"))
-				{ 
+			foreach($full_trace as $trace_value) {
+				if(strpos($trace_value['file'], "/plugins/")) { 
 					$found = 1;
 					$plugin_name = $trace_value['file'];
 					$plugin_name = str_replace(WP_PLUGIN_DIR.'/','',$plugin_name);
@@ -114,14 +120,15 @@ if (!class_exists('SiteInfo')) :
 					break;
 				}
 			}
-			if($found == 0)
+			
+			if($found == 0 || $plugin_name == "Plugin : Bv-analytics-modified") {
 				$component = "Core";
-			else
+			}else {
 				$component = $plugin_name;
+			}
 
 			return $component;
 		}
-
 	}
 endif;
 ?>
